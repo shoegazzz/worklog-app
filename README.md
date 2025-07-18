@@ -16,9 +16,9 @@
 
 - React
 - TypeScript
-- MobX 
+- MobX
 - Ant Design
-- Tailwind CSS 
+- Tailwind CSS
 - Axios / React Query для работы с API
 
 ## Запуск проекта
@@ -26,3 +26,5 @@
 ```bash
 npm install
 npm start
+
+```
