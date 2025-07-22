@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { observer } from "mobx-react-lite";
+import AuthPage from "./pages/AuthPage";
+import WorklogsPage from "./pages/WorklogsPage";
+import ProfilePage from "./pages/ProfilePage";
+import NewsPage from "./pages/NewsPage";
+import TimeTrackingPage from "./pages/TimeTrackingPage";
+import Header from "./components/Header";
+import { userStore } from "./stores/userStore";
 
-function App() {
-  const [count, setCount] = useState(0)
+const AppContent = observer(() => {
+  const location = useLocation();
+  const isAuthPage = location.pathname === "/";
+
+  // Если пользователь авторизован и пытается зайти на страницу входа
+  if (isAuthPage && userStore.isAuthenticated) {
+    return <Navigate to="/profile" replace />;
+  }
+
+  // Если пользователь не авторизован и пытается зайти на защищенные страницы
+  if (!isAuthPage && !userStore.isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      {!isAuthPage && <Header />}
+      <Routes>
+        <Route path="/" element={<AuthPage />} />
+        <Route path="/worklogs" element={<WorklogsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/news" element={<NewsPage />} />
+        <Route path="/timetracking" element={<TimeTrackingPage />} />
+      </Routes>
     </>
-  )
-}
+  );
+});
 
-export default App
+const App = () => {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
+};
+
+export default App;
