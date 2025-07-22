@@ -165,4 +165,18 @@ export const handlers = [
     }
     return HttpResponse.json({ message: 'Not found' }, { status: 404 });
   }),
+  http.post('/api/upload-avatar', async ({ request }) => {
+    const formData = await request.formData();
+    const file = formData.get('file');
+
+    if (!file || !(file instanceof File)) {
+      return HttpResponse.json({ message: 'Файл не загружен' }, { status: 400 });
+    }
+
+    // Притворимся, что загрузка успешна и возвращаем URL
+    const fakeUrl = `/uploads/${file.name}`;
+    currentUser.avatarUrl = fakeUrl;
+
+    return HttpResponse.json({ avatarUrl: fakeUrl }, { status: 200 });
+  }),
 ]; 
